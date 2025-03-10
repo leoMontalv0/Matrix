@@ -1,3 +1,4 @@
+import numpy as np
 def crear_matriz(filas, columnas):
     matriz = []
     for i in range(filas):
@@ -39,6 +40,33 @@ def main():
             imprimir_matriz(matriz)
         else:
             break
+
+#hacer matriz identidad gauss pivot
+def gauss_jordan_identidad(matriz):
+    n = len(matriz)
+    identidad = np.eye(n, dtype=float) 
+
+    for i in range(n):
+        max_fila = max(range(i, n), key=lambda r: abs(matriz[r][i]))
+        if matriz[max_fila][i] == 0:
+            raise ValueError("La matriz es singular y no tiene inversa.")
+        
+        if max_fila != i:
+            matriz[i], matriz[max_fila] = matriz[max_fila], matriz[i]
+            identidad[i], identidad[max_fila] = identidad[max_fila], identidad[i]
+
+        pivote = matriz[i][i]
+        matriz[i] = [x / pivote for x in matriz[i]]
+        identidad[i] = [x / pivote for x in identidad[i]]
+
+        for j in range(n):
+            if i != j:
+                factor = matriz[j][i]
+                matriz[j] = [matriz[j][k] - factor * matriz[i][k] for k in range(n)]
+                identidad[j] = [identidad[j][k] - factor * identidad[i][k] for k in range(n)]
+
+    return identidad
+
 
 if __name__ == "__main__":
     main()
